@@ -1,14 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { Button, FlatList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, FlatList, StyleSheet, Text, View } from 'react-native';
 import Modal from './src/components/Modal';
 import AddItem from './AddItem';
+import Checkbox from 'expo-checkbox';
 
 export default function App() {
   const [textItem, setTextItem] = useState('')
   const [list, setList] = useState([])
   const [itemSelected, setItemSelected] = useState('')
   const [modalVisible, setModalVisible] = useState(false)
+  const [isChecked, setIsChecked] = useState(true)
 
   const onHandleChangeItem = (event) => {
     setTextItem(event)
@@ -28,12 +30,29 @@ export default function App() {
   }
 
   const renderItem = ({item}) => (
+    isChecked 
+    ?
+      <View style={styles.renderItemChecked}>
+        <Text style={styles.listItemTextChecked}>{item}</Text>
+        <View style={styles.renderItemModifyStyle}>
+          <Pressable onPress={() => handleModal(item)} style={styles.buttonChecked}> 
+            <Text style={styles.itemButtonText}>EDIT</Text> 
+          </Pressable>
+          <Checkbox value={true} onValueChange={() => setIsChecked(!isChecked)}/>
+        </View>
+      </View> 
+      :
       <View style={styles.renderItemStyle}>
-        <Text style={styles.listItemText}>{item}</Text>
-        <Button title='EDIT'onPress={() => handleModal(item)}/>
+      <Text>{item}</Text>
+      <View style={styles.renderItemModifyStyle}>
+        <Pressable onPress={() => handleModal(item)} style={styles.button}> 
+          <Text style={styles.itemButtonText}>EDIT</Text> 
+        </Pressable>
+        <Checkbox value={false} onValueChange={() => setIsChecked(true)}/>
       </View>
-  )
-
+      
+    </View>    
+  ) 
   // const renderItem = () => {
   //   return 
   //     <View>
@@ -104,5 +123,53 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 1,
   },
-
+  renderItemChecked: {
+    height: 60,
+    flexDirection:'row',
+    marginBottom: 20,
+    backgroundColor: '#80ed99',
+    borderRadius: 10,
+    padding: 10,
+    paddingHorizontal: 20,
+    justifyContent: 'space-between',
+    alignItems:'center',
+    shadowColor: '#525252',
+    shadowOpacity: 0.3,
+    shadowOffset: {width: 0 , height: 2},
+    shadowRadius: 3,
+    elevation: 1,
+  },
+  renderItemModifyStyle: {
+    flexDirection:'row',
+    alignItems: 'center',
+  },
+  listItemTextChecked: {
+    color: '#525252',
+    fontWeight:'600'
+  },
+  button: {
+    marginRight: 15,
+    borderRadius: 5,
+    padding: 5,
+    backgroundColor: '#80ed99',
+    shadowColor: '#525252',
+    shadowOpacity: 0.3,
+    shadowOffset: {width: 0 , height: 2},
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  buttonChecked: {
+    marginRight: 15,
+    borderRadius: 5,
+    padding: 5,
+    backgroundColor: '#FFFFFF',
+    shadowColor: '#525252',
+    shadowOpacity: 0.3,
+    shadowOffset: {width: 0 , height: 2},
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  itemButtonText: {
+    color: '#525252',
+  }
 });
